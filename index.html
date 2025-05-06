@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://unpkg.com/dayjs@1/dayjs.min.js"></script>
+  </head>
+  <body>
+    <script>
+      async function getChefBirthday(id) {
+        try {
+          const recipeResponse = await fetch(
+            `https://dummyjson.com/recipes/${id}`
+          );
+          if (!recipeResponse.ok) {
+            throw new Error(`Ricetta con id ${id} non trovata`);
+          }
+
+          const recipeData = await recipeResponse.json();
+          const userId = recipeData.userId;
+
+          const userResponse = await fetch(
+            `https://dummyjson.com/users/${userId}`
+          );
+          if (!userResponse.ok) {
+            throw new Error(`Utente con id ${userId} non trovato`);
+          }
+
+          const userData = await userResponse.json();
+          const birthDate = userData.birthDate;
+          const formattedDate = dayjs(birthDate).format("DD/MM/YYYY");
+
+          return formattedDate;
+        } catch (error) {
+          console.error("Errore:", error.message);
+          throw error;
+        }
+      }
+
+      getChefBirthday(1).then((date) =>
+        console.log("Data di nascita dello chef è:", date)
+      );
+    </script>
+  </body>
+</html>
